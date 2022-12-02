@@ -5,7 +5,7 @@ export class Cpf {
     private _value: string;
 
     constructor(cpfInputValue: string) {
-        if (!this.isValid(cpfInputValue)) throw new Error("Cpf é inválido");
+        if (!this.isValid(cpfInputValue)) throw new Error("Cpf inválido");
         this._value = cpfInputValue;
     }
 

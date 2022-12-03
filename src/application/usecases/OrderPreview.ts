@@ -9,7 +9,7 @@ export class OrderPreview {
     ) {}
 
     async execute(input: PreviewCheckoutInput): Promise<PreviewCheckoutOutput> {
-        const order = new Order(input.cpf);
+        const order = new Order(input.cpf, input.now);
 
         for (const inputItem of input.items) {
             const item = await this.itemRepository.getItem(inputItem.idItem);
@@ -33,6 +33,7 @@ type PreviewCheckoutInput = {
         quantity: number;
     }[];
     coupon?: string;
+    now?: Date;
 };
 
 type PreviewCheckoutOutput = {

@@ -4,11 +4,11 @@ import { Item } from "./Item";
 import { OrderItem } from "./OrderItem";
 
 export class Order {
-    cpf: Cpf;
+    readonly cpf: Cpf;
     orderItens: OrderItem[] = [];
     coupon?: Coupon;
 
-    constructor(cpf: string) {
+    constructor(cpf: string, readonly now?: Date) {
         this.cpf = new Cpf(cpf);
     }
 
@@ -27,7 +27,7 @@ export class Order {
         );
 
         if (this.coupon) {
-            total -= this.coupon.calculateDiscount(total);
+            total -= this.coupon.calculateDiscount(total, this.now);
         }
 
         return total;

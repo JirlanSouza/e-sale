@@ -27,4 +27,34 @@ describe("Order", () => {
         const total = order.getTotal();
         expect(total).toBe(5490);
     });
+
+    test("Should not be applicable discount on expired coupon", () => {
+        const order = new Order(
+            "259.556.978-37",
+            new Date("2022-12-02T23:59:59.999"),
+        );
+        order.addItem(new Item("1", "Guitarra", 1000), 1);
+        order.addItem(new Item("2", "Amplificador", 5000), 1);
+        order.addItem(new Item("3", "Cabo", 100), 1);
+        order.addCoupon(
+            new Coupon("VALE10", 10, new Date("2022-12-01T23:59:59.999")),
+        );
+        const total = order.getTotal();
+        expect(total).toBe(6100);
+    });
+
+    test("Should be applicable discount on not expired coupon", () => {
+        const order = new Order(
+            "259.556.978-37",
+            new Date("2022-12-01T23:59:59.999"),
+        );
+        order.addItem(new Item("1", "Guitarra", 1000), 1);
+        order.addItem(new Item("2", "Amplificador", 5000), 1);
+        order.addItem(new Item("3", "Cabo", 100), 1);
+        order.addCoupon(
+            new Coupon("VALE10", 10, new Date("2022-12-02T23:59:59.999")),
+        );
+        const total = order.getTotal();
+        expect(total).toBe(5490);
+    });
 });

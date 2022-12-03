@@ -84,4 +84,38 @@ describe("Checkout", () => {
         expect(orders).toHaveLength(1);
         expect(orders[0].getTotal()).toBe(5490);
     });
+
+    test("Should not be applicable discount on expired coupon", async () => {
+        couponRepository.saveCoupon(
+            new Coupon("VALE10", 10, new Date("2022-12-01T23:59:59.999")),
+        );
+        itemRepository.saveItem(new Item("1", "Guitarra", 1000));
+        itemRepository.saveItem(new Item("2", "Amplificador", 5000));
+        itemRepository.saveItem(new Item("3", "Cabo", 100));
+
+        const input = {
+            cpf: "259.556.978-37",
+            items: [
+                {
+                    idItem: "1",
+                    quantity: 1,
+                },
+                {
+                    idItem: "2",
+                    quantity: 1,
+                },
+                {
+                    idItem: "3",
+                    quantity: 1,
+                },
+            ],
+            coupon: "VALE10",
+            now: new Date("2022-12-02T23:59:59.999"),
+        };
+
+        await checkout.execute(input);
+        const orders = await orderRepository.getOrdersByCpf(input.cpf);
+        expect(orders).toHaveLength(1);
+        expect(orders[0].getTotal()).toBe(6100);
+    });
 });

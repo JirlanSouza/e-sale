@@ -11,4 +11,15 @@ describe("Coupon", () => {
             new Error("Invalid coupon percentage"),
         );
     });
+
+    test("Should not be applicable discount on expired coupon", () => {
+        const coupon = new Coupon(
+            "VALE10",
+            10,
+            new Date("2022-12-01T23:59:59.999"),
+        );
+        expect(
+            coupon.calculateDiscount(100, new Date("2022-12-02T23:59:59.999")),
+        ).toBe(0);
+    });
 });

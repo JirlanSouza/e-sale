@@ -11,7 +11,7 @@ export class Checkout {
     ) {}
 
     async execute(input: CheckoutInput): Promise<void> {
-        const order = new Order(input.cpf);
+        const order = new Order(input.cpf, input.now);
 
         for (const inputItem of input.items) {
             const item = await this.itemRepository.getItem(inputItem.idItem);
@@ -34,4 +34,5 @@ type CheckoutInput = {
         quantity: number;
     }[];
     coupon?: string;
+    now?: Date;
 };

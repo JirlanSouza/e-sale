@@ -1,14 +1,16 @@
+import { Order } from "src/domain/entity/Order";
 import { CouponRepository } from "src/domain/repositoty/CouponRepository";
-import { Order } from "../../domain/entity/Order";
-import { ItemRepository } from "../../domain/repositoty/ItemRepository";
+import { ItemRepository } from "src/domain/repositoty/ItemRepository";
+import { OrderRepository } from "src/domain/repositoty/OrderRepository";
 
-export class OrderPreview {
+export class Checkout {
     constructor(
         private readonly itemRepository: ItemRepository,
         private readonly couponRepository: CouponRepository,
+        private readonly orderRepository: OrderRepository,
     ) {}
 
-    async execute(input: PreviewCheckoutInput): Promise<PreviewCheckoutOutput> {
+    async execute(input: CheckoutInput): Promise<void> {
         const order = new Order(input.cpf);
 
         for (const inputItem of input.items) {
@@ -21,20 +23,15 @@ export class OrderPreview {
             order.addCoupon(coupon);
         }
 
-        const total = order.getTotal();
-        return { total };
+        await this.orderRepository.saveOrder(order);
     }
 }
 
-type PreviewCheckoutInput = {
+type CheckoutInput = {
     cpf: string;
     items: {
         idItem: string;
         quantity: number;
     }[];
     coupon?: string;
-};
-
-type PreviewCheckoutOutput = {
-    total: number;
 };

@@ -2,7 +2,7 @@ import { Item } from "src/domain/entity/Item";
 import { ItemRepository } from "src/domain/repositoty/ItemRepository";
 
 export class InMemoryItemRepository implements ItemRepository {
-    items: Item[];
+    private items: Item[];
 
     constructor() {
         this.items = [];

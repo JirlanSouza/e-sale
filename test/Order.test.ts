@@ -27,11 +27,4 @@ describe("Order", () => {
         const total = order.getTotal();
         expect(total).toBe(5490);
     });
-
-    test("Should not be able create order with negative item quantity", () => {
-        const order = new Order("259.556.978-37");
-        expect(() =>
-            order.addItem(new Item("1", "Guitarra", 1000), -1),
-        ).toThrow(new Error("Invalid item quantity"));
-    });
 });

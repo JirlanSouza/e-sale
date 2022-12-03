@@ -1,17 +1,37 @@
-import { Order } from "../src/Order";
-import { OrderItem } from "../src/OrderItem";
+import { Coupon } from "../src/domain/entity/Coupon";
+import { Item } from "../src/domain/entity/Item";
+import { Order } from "../src/domain/entity/Order";
 
 describe("Order", () => {
-    test("Não deve criar um pedido com um cpf inválido", () => {
+    test("Should be able create a order with valid cpf", () => {
         expect(() => new Order("111.111.111-00")).toThrow(
             new Error("Cpf inválido"),
         );
     });
 
-    test("Deve criar um pedido com 3 itens", () => {
+    test("Should be able able create a order with 3 items", () => {
         const order = new Order("259.556.978-37");
-        order.addItem(new OrderItem(1, "Guitarra", 1000));
-        order.addItem(new OrderItem(1, "Amplificador", 5000));
-        order.addItem(new OrderItem(1, "Cabo", 100));
+        order.addItem(new Item("1", "Guitarra", 1000), 1);
+        order.addItem(new Item("2", "Amplificador", 5000), 1);
+        order.addItem(new Item("3", "Cabo", 100), 1);
+        const total = order.getTotal();
+        expect(total).toBe(6100);
+    });
+
+    test("Should be able create a order with 3 items and 1 discount coupon", () => {
+        const order = new Order("259.556.978-37");
+        order.addItem(new Item("1", "Guitarra", 1000), 1);
+        order.addItem(new Item("2", "Amplificador", 5000), 1);
+        order.addItem(new Item("3", "Cabo", 100), 1);
+        order.addCoupon(new Coupon("VALE10", 10));
+        const total = order.getTotal();
+        expect(total).toBe(5490);
+    });
+
+    test("Should not be able create order with negative item quantity", () => {
+        const order = new Order("259.556.978-37");
+        expect(() =>
+            order.addItem(new Item("1", "Guitarra", 1000), -1),
+        ).toThrow(new Error("Invalid item quantity"));
     });
 });

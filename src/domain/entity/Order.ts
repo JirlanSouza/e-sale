@@ -16,6 +16,10 @@ export class Order {
         this.orderItens.push(new OrderItem(item.idItem, item.price, quantity));
     }
 
+    addCoupon(coupon: Coupon) {
+        this.coupon = coupon;
+    }
+
     getTotal() {
         let total = this.orderItens.reduce(
             (total, orderItem) => total + orderItem.getTotal(),

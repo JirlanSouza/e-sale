@@ -44,6 +44,23 @@ describe("OrderPreview", () => {
         expect(orederPreviewResult.total).toBe(6100);
     });
 
+    test("Should not be able simulate order  with invalid item", async () => {
+        itemRepository.saveItem(new Item("1", "Guitarra", 1000));
+        const input = {
+            cpf: "259.556.978-37",
+            items: [
+                {
+                    idItem: "2",
+                    quantity: 1,
+                },
+            ],
+        };
+
+        expect(async () => await orderPreview.execute(input)).rejects.toThrow(
+            new Error("Item not found"),
+        );
+    });
+
     test("Should be able simulate order with discount", async () => {
         couponRepository.saveCoupon(new Coupon("VALE10", 10));
         itemRepository.saveItem(new Item("1", "Guitarra", 1000));
@@ -103,5 +120,23 @@ describe("OrderPreview", () => {
 
         const orederPreviewResult = await orderPreview.execute(input);
         expect(orederPreviewResult.total).toBe(6100);
+    });
+
+    test("Should not be able simulate order  with invalid coupon", async () => {
+        itemRepository.saveItem(new Item("1", "Guitarra", 1000));
+        const input = {
+            cpf: "259.556.978-37",
+            items: [
+                {
+                    idItem: "1",
+                    quantity: 1,
+                },
+            ],
+            coupon: "VALE10",
+        };
+
+        expect(async () => await orderPreview.execute(input)).rejects.toThrow(
+            new Error("Coupon not found"),
+        );
     });
 });

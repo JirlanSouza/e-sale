@@ -54,6 +54,23 @@ describe("Checkout", () => {
         expect(orders[0].getTotal()).toBe(6100);
     });
 
+    test("Must not place an order  with invalid item", async () => {
+        itemRepository.saveItem(new Item("1", "Guitarra", 1000));
+        const input = {
+            cpf: "259.556.978-37",
+            items: [
+                {
+                    idItem: "2",
+                    quantity: 1,
+                },
+            ],
+        };
+
+        expect(async () => await checkout.execute(input)).rejects.toThrow(
+            new Error("Item not found"),
+        );
+    });
+
     test("Must place an order  with discount", async () => {
         couponRepository.saveCoupon(new Coupon("VALE10", 10));
         itemRepository.saveItem(new Item("1", "Guitarra", 1000));
@@ -117,5 +134,41 @@ describe("Checkout", () => {
         const orders = await orderRepository.getOrdersByCpf(input.cpf);
         expect(orders).toHaveLength(1);
         expect(orders[0].getTotal()).toBe(6100);
+    });
+
+    test("Must not place an order  with invalid coupon", async () => {
+        itemRepository.saveItem(new Item("1", "Guitarra", 1000));
+        const input = {
+            cpf: "259.556.978-37",
+            items: [
+                {
+                    idItem: "1",
+                    quantity: 1,
+                },
+            ],
+            coupon: "VALE10",
+        };
+
+        expect(async () => await checkout.execute(input)).rejects.toThrow(
+            new Error("Coupon not found"),
+        );
+    });
+
+    test("Should able create order with code", async () => {
+        itemRepository.saveItem(new Item("1", "Guitarra", 1000));
+        const input = {
+            cpf: "259.556.978-37",
+            items: [
+                {
+                    idItem: "1",
+                    quantity: 1,
+                },
+            ],
+            now: new Date("2022-12-01T00:00:00.000"),
+        };
+
+        await checkout.execute(input);
+        const orders = await orderRepository.getOrdersByCpf(input.cpf);
+        expect(orders[0].code).toBe("202200000001");
     });
 });

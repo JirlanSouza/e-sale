@@ -2,13 +2,18 @@ import { Order } from "src/domain/entity/Order";
 import { CouponRepository } from "src/domain/repositoty/CouponRepository";
 import { ItemRepository } from "src/domain/repositoty/ItemRepository";
 import { OrderRepository } from "src/domain/repositoty/OrderRepository";
+import { RepositoryFactory } from "src/domain/repositoty/RepositoryFactory";
 
 export class Checkout {
-    constructor(
-        private readonly itemRepository: ItemRepository,
-        private readonly couponRepository: CouponRepository,
-        private readonly orderRepository: OrderRepository,
-    ) {}
+    private readonly itemRepository: ItemRepository;
+    private readonly couponRepository: CouponRepository;
+    private readonly orderRepository: OrderRepository;
+
+    constructor(repositoryFactory: RepositoryFactory) {
+        this.itemRepository = repositoryFactory.createItemRepository();
+        this.couponRepository = repositoryFactory.createCouponRepository();
+        this.orderRepository = repositoryFactory.createOrderRepository();
+    }
 
     async execute(input: CheckoutInput): Promise<void> {
         const nextSequence = (await this.orderRepository.count()) + 1;

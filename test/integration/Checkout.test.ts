@@ -4,25 +4,25 @@ import { Item } from "src/domain/entity/Item";
 import { CouponRepository } from "src/domain/repositoty/CouponRepository";
 import { ItemRepository } from "src/domain/repositoty/ItemRepository";
 import { OrderRepository } from "src/domain/repositoty/OrderRepository";
+import { RepositoryFactory } from "src/domain/repositoty/RepositoryFactory";
 import { InMemoryCouponRepository } from "src/infra/repository/inMemory/InMemoryCouponRepository";
 import { InMemoryItemRepository } from "src/infra/repository/inMemory/InMemoryItemRepository";
 import { InMemoryOrderRepository } from "src/infra/repository/inMemory/InMemoryOrderRepository";
+import { InMemoryRepositoryFactory } from "src/infra/repository/inMemory/InMemoryRepositoryFactory";
 
 describe("Checkout", () => {
     let checkout: Checkout;
+    let repositoryFactory: RepositoryFactory;
     let itemRepository: ItemRepository;
     let couponRepository: CouponRepository;
     let orderRepository: OrderRepository;
 
     beforeEach(() => {
-        itemRepository = new InMemoryItemRepository();
-        couponRepository = new InMemoryCouponRepository();
-        orderRepository = new InMemoryOrderRepository();
-        checkout = new Checkout(
-            itemRepository,
-            couponRepository,
-            orderRepository,
-        );
+        repositoryFactory = new InMemoryRepositoryFactory();
+        itemRepository = repositoryFactory.createItemRepository();
+        couponRepository = repositoryFactory.createCouponRepository();
+        orderRepository = repositoryFactory.createOrderRepository();
+        checkout = new Checkout(repositoryFactory);
     });
 
     test("Must place an order", async () => {

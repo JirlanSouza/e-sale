@@ -4,11 +4,8 @@ import { Item } from "src/domain/entity/Item";
 import { CouponRepository } from "src/domain/repositoty/CouponRepository";
 import { ItemRepository } from "src/domain/repositoty/ItemRepository";
 import { OrderRepository } from "src/domain/repositoty/OrderRepository";
-import { RepositoryFactory } from "src/domain/repositoty/RepositoryFactory";
-import { InMemoryCouponRepository } from "src/infra/repository/inMemory/InMemoryCouponRepository";
-import { InMemoryItemRepository } from "src/infra/repository/inMemory/InMemoryItemRepository";
-import { InMemoryOrderRepository } from "src/infra/repository/inMemory/InMemoryOrderRepository";
-import { InMemoryRepositoryFactory } from "src/infra/repository/inMemory/InMemoryRepositoryFactory";
+import { RepositoryFactory } from "src/domain/factory/RepositoryFactory";
+import { InMemoryRepositoryFactory } from "src/infra/factory/InMemoryRepositoryFactory";
 
 describe("Checkout", () => {
     let checkout: Checkout;

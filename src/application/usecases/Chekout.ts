@@ -1,8 +1,8 @@
 import { Order } from "src/domain/entity/Order";
+import { RepositoryFactory } from "src/domain/factory/RepositoryFactory";
 import { CouponRepository } from "src/domain/repositoty/CouponRepository";
 import { ItemRepository } from "src/domain/repositoty/ItemRepository";
 import { OrderRepository } from "src/domain/repositoty/OrderRepository";
-import { RepositoryFactory } from "src/domain/repositoty/RepositoryFactory";
 
 export class Checkout {
     private readonly itemRepository: ItemRepository;

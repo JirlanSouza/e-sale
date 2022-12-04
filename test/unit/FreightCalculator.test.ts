@@ -24,4 +24,16 @@ describe("FreightCalculator", () => {
         const freight = FreightCalculator.calculate(item);
         expect(freight).toBe(10);
     });
+
+    test("Should be able calculate freight with distance", () => {
+        const item = new Item(
+            "1",
+            "Gitarra",
+            1000,
+            new Dimension(100, 30, 10, 3),
+        );
+        const distance = 748.2217780081631;
+        const freight = FreightCalculator.calculate(item, distance);
+        expect(freight).toBe(22.446653340244893);
+    });
 });

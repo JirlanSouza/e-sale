@@ -1,10 +1,10 @@
 import { CouponRepository } from "src/domain/repositoty/CouponRepository";
 import { ItemRepository } from "src/domain/repositoty/ItemRepository";
 import { OrderRepository } from "src/domain/repositoty/OrderRepository";
-import { RepositoryFactory } from "src/domain/repositoty/RepositoryFactory";
-import { InMemoryCouponRepository } from "./InMemoryCouponRepository";
-import { InMemoryItemRepository } from "./InMemoryItemRepository";
-import { InMemoryOrderRepository } from "./InMemoryOrderRepository";
+import { RepositoryFactory } from "src/domain/factory/RepositoryFactory";
+import { InMemoryCouponRepository } from "../repository/inMemory/InMemoryCouponRepository";
+import { InMemoryItemRepository } from "../repository/inMemory/InMemoryItemRepository";
+import { InMemoryOrderRepository } from "../repository/inMemory/InMemoryOrderRepository";
 
 export class InMemoryRepositoryFactory implements RepositoryFactory {
     private itemRepository?: ItemRepository;

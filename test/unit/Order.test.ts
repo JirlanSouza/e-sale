@@ -71,16 +71,6 @@ describe("Order", () => {
         expect(total).toBe(5490);
     });
 
-    test("Should be able able create a order with freght", () => {
-        const order = new Order("259.556.978-37", 1);
-        order.addItem(
-            new Item("1", "Guitarra", 1000, new Dimension(100, 30, 10, 3)),
-            1,
-        );
-        const total = order.getTotal();
-        expect(total).toBe(1030);
-    });
-
     test("Should be able able create a order with code", () => {
         const order = new Order(
             "259.556.978-37",

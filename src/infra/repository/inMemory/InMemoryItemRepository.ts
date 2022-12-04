@@ -18,4 +18,10 @@ export class InMemoryItemRepository implements ItemRepository {
         if (!item) throw new Error("Item not found");
         return item;
     }
+
+    async getItemsById(ids: string[]): Promise<Item[]> {
+        return this.items.filter((item) => {
+            return ids.some((id) => id === item.idItem);
+        });
+    }
 }

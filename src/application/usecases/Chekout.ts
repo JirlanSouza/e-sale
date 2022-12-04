@@ -11,7 +11,8 @@ export class Checkout {
     ) {}
 
     async execute(input: CheckoutInput): Promise<void> {
-        const order = new Order(input.cpf, input.now);
+        const nextSequence = (await this.orderRepository.count()) + 1;
+        const order = new Order(input.cpf, nextSequence, input.now);
 
         for (const inputItem of input.items) {
             const item = await this.itemRepository.getItem(inputItem.idItem);

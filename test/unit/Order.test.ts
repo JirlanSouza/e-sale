@@ -1,4 +1,5 @@
 import { Coupon } from "src/domain/entity/Coupon";
+import { Dimension } from "src/domain/entity/Dimension";
 import { Item } from "src/domain/entity/Item";
 import { Order } from "src/domain/entity/Order";
 
@@ -26,6 +27,16 @@ describe("Order", () => {
         order.addCoupon(new Coupon("VALE10", 10));
         const total = order.getTotal();
         expect(total).toBe(5490);
+    });
+
+    test("Should not be added duplicate item", () => {
+        const order = new Order("259.556.978-37");
+        const item = new Item("1", "Guitarra", 1000);
+        order.addItem(item, 1);
+
+        expect(() => order.addItem(item, 1)).toThrow(
+            new Error("Duplicated item"),
+        );
     });
 
     test("Should not be applicable discount on expired coupon", () => {
@@ -56,5 +67,15 @@ describe("Order", () => {
         );
         const total = order.getTotal();
         expect(total).toBe(5490);
+    });
+
+    test("Should be able able create a order with freght", () => {
+        const order = new Order("259.556.978-37");
+        order.addItem(
+            new Item("1", "Guitarra", 1000, new Dimension(100, 30, 10, 3)),
+            1,
+        );
+        const total = order.getTotal();
+        expect(total).toBe(1030);
     });
 });

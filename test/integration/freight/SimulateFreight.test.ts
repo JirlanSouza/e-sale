@@ -2,12 +2,12 @@ import { Item } from "src/catalog/domain/entity/Item";
 import { ItemRepository } from "src/catalog/domain/repository/ItemRepository";
 import { Dimension } from "src/catalog/domain/valueObject/Dimension";
 
-import { InMemoryItemRepository } from "src/catalog/infra/repository/memory/InMemoryItemRepository";
-import { SimulateFreight } from "src/freight/application/usecase/SimulateFreight";
+import { InMemoryItemRepository } from "src/catalog/infra/repository/inMemory/InMemoryItemRepository";
+import { SimulateFreight } from "src/freight/application/usecases/SimulateFreight";
 import { Zipcode } from "src/freight/domain/entity/Zipcode";
 import { ZipcodeRepository } from "src/freight/domain/repository/ZipcodeRepository";
 import { Coordinate } from "src/freight/domain/valueObject/Coordinate";
-import { InMemoryZipcodeRepository } from "src/freight/infra/repository/memory/InMemoryZipcodeRepository";
+import { InMemoryZipcodeRepository } from "src/freight/infra/repository/inMemory/InMemoryZipcodeRepository";
 
 describe("SimulateFreight", () => {
     let simulateFreight: SimulateFreight;

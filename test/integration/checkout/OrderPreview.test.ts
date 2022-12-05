@@ -1,7 +1,7 @@
 import { Item } from "src/catalog/domain/entity/Item";
 import { ItemRepository } from "src/catalog/domain/repository/ItemRepository";
 import { Dimension } from "src/catalog/domain/valueObject/Dimension";
-import { InMemoryItemRepository } from "src/catalog/infra/repository/memory/InMemoryItemRepository";
+import { InMemoryItemRepository } from "src/catalog/infra/repository/inMemory/InMemoryItemRepository";
 import { OrderPreview } from "src/checkout/application/usecases/OrderPreview";
 import { Coupon } from "src/checkout/domain/entity/Coupon";
 import { CouponRepository } from "src/checkout/domain/repositoty/CouponRepository";
@@ -9,7 +9,7 @@ import { InMemoryCouponRepository } from "src/checkout/infra/repository/inMemory
 import { Zipcode } from "src/freight/domain/entity/Zipcode";
 import { ZipcodeRepository } from "src/freight/domain/repository/ZipcodeRepository";
 import { Coordinate } from "src/freight/domain/valueObject/Coordinate";
-import { InMemoryZipcodeRepository } from "src/freight/infra/repository/memory/InMemoryZipcodeRepository";
+import { InMemoryZipcodeRepository } from "src/freight/infra/repository/inMemory/InMemoryZipcodeRepository";
 
 describe("OrderPreview", () => {
     let orderPreview: OrderPreview;

@@ -1,7 +1,7 @@
-import { Item } from "../../../../catalog/domain/entity/Item";
 import { Cpf } from "../valueObject/Cpf";
 import { OrderCode } from "../valueObject/OrderCode";
 import { Coupon } from "./Coupon";
+import { Item } from "./Item";
 import { OrderItem } from "./OrderItem";
 
 export class Order {

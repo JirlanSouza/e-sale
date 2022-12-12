@@ -1,4 +1,4 @@
-import { Injectable, Logger } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import { QueueAdapter } from "src/application/adapter/Queue";
 
 @Injectable()
@@ -10,7 +10,6 @@ export class InMemoryQueueAdapter implements QueueAdapter {
     }
 
     async publish(topic: string, payload: any): Promise<void> {
-        Logger.log([topic, payload], InMemoryQueueAdapter.name);
         const consumers = this.consumers.get(topic) ?? [];
         for (const consume of consumers) {
             consume(payload);
@@ -18,7 +17,6 @@ export class InMemoryQueueAdapter implements QueueAdapter {
     }
 
     async consume(topic: string, callback: Function): Promise<void> {
-        Logger.log(`New consume to topic: ${topic}`, InMemoryQueueAdapter.name);
         if (this.consumers.has(topic)) {
             this.consumers.set(topic, [...this.consumers.get(topic), callback]);
             return;

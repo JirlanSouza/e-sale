@@ -1,3 +1,5 @@
 export interface QueueAdapter {
-    publish(destination: string, payload: any): Promise<void>;
+    publish(topic: string, payload: any): Promise<void>;
 }
+
+export const QueueAdapter = Symbol("QueueAdapter");

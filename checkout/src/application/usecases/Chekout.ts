@@ -34,7 +34,8 @@ export class Checkout {
         }
 
         await this.orderRepository.saveOrder(order);
-        await this.queue.publish("checkout", new OrderPlacedEvent(order));
+        const placedOrderEvnet = new OrderPlacedEvent(order);
+        await this.queue.publish(placedOrderEvnet.name, placedOrderEvnet);
     }
 }
 

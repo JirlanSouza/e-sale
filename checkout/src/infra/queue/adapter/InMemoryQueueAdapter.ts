@@ -1,18 +1,19 @@
 import { Injectable } from "@nestjs/common";
-import { QueueAdapter } from "src/application/adapter/Queue";
+import { OrderPlacedQueue } from "src/application/adapter/OrderPlacedQueue";
+import { OrderPlacedEvent } from "src/domain/event/OrderPlacedEvent";
 
 @Injectable()
-export class InMemoryQueueAdapter implements QueueAdapter {
+export class InMemoryOrderPlacedQueueAdapter implements OrderPlacedQueue {
     private consumers: Map<string, Function[]>;
 
     constructor() {
         this.consumers = new Map();
     }
 
-    async publish(topic: string, payload: any): Promise<void> {
-        const consumers = this.consumers.get(topic) ?? [];
+    async publish(event: OrderPlacedEvent): Promise<void> {
+        const consumers = this.consumers.get(event.name) ?? [];
         for (const consume of consumers) {
-            consume(payload);
+            consume(event);
         }
     }
 

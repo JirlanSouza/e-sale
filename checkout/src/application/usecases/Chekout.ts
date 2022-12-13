@@ -3,7 +3,7 @@ import { OrderPlacedEvent } from "src/domain/event/OrderPlacedEvent";
 import { RepositoryFactory } from "src/domain/factory/RepositoryFactory";
 import { CouponRepository } from "src/domain/repositoty/CouponRepository";
 import { OrderRepository } from "src/domain/repositoty/OrderRepository";
-import { QueueAdapter } from "../adapter/Queue";
+import { OrderPlacedQueue } from "../adapter/OrderPlacedQueue";
 import { GetItemGatway } from "../gatway/GetItemGatway";
 
 export class Checkout {
@@ -13,7 +13,7 @@ export class Checkout {
     constructor(
         repositoryFactory: RepositoryFactory,
         private readonly getItemGatway: GetItemGatway,
-        private readonly queue: QueueAdapter,
+        private readonly orderPlacedQueue: OrderPlacedQueue,
     ) {
         this.couponRepository = repositoryFactory.createCouponRepository();
         this.orderRepository = repositoryFactory.createOrderRepository();
@@ -34,8 +34,8 @@ export class Checkout {
         }
 
         await this.orderRepository.saveOrder(order);
-        const placedOrderEvnet = new OrderPlacedEvent(order);
-        await this.queue.publish(placedOrderEvnet.name, placedOrderEvnet);
+        const placedOrderEvent = new OrderPlacedEvent(order);
+        await this.orderPlacedQueue.publish(placedOrderEvent);
     }
 }
 

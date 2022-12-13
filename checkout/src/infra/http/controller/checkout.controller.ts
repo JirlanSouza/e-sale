@@ -1,12 +1,13 @@
 import { Body, Controller, Inject, Post } from "@nestjs/common";
-import { QueueAdapter } from "src/application/adapter/Queue";
+import { PlaceOrderQueue } from "src/application/adapter/PlaceOrderQueue";
 import { PlaceOrderComand } from "src/application/comands/placeOrder";
 import { PlaceOrderDto } from "../Dtos/placeOrder";
 
 @Controller("/checkout")
 export class CheckoutController {
     constructor(
-        @Inject(QueueAdapter) private readonly queueAdpter: QueueAdapter,
+        @Inject(PlaceOrderQueue)
+        private readonly placeOrderQueue: PlaceOrderQueue,
     ) {}
 
     @Post()
@@ -17,6 +18,6 @@ export class CheckoutController {
             placeOrderData.coupon,
         );
 
-        this.queueAdpter.publish(comand.name, comand);
+        this.placeOrderQueue.publish(comand);
     }
 }

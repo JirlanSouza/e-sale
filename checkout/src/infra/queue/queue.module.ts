@@ -1,13 +1,15 @@
 import { Module } from "@nestjs/common";
 import { ClientProxy, ClientsModule, Transport } from "@nestjs/microservices";
-import { QueueAdapter } from "src/application/adapter/Queue";
+import { OrderPlacedQueue } from "src/application/adapter/OrderPlacedQueue";
+import { PlaceOrderQueue } from "src/application/adapter/PlaceOrderQueue";
 import { GetItemGatway } from "src/application/gatway/GetItemGatway";
 import { Checkout } from "src/application/usecases/Chekout";
 import { RepositoryFactory } from "src/domain/factory/RepositoryFactory";
 import { InMemoryRepositoryFactory } from "../factory/InMemoryRepositoryFactory";
 import { InMemorygetItemGatway } from "../gatway/InMemoryGetItemGatway";
-import { InMemoryQueueAdapter } from "./adapter/InMemoryQueueAdapter";
-import { RmqQueueAdapter } from "./adapter/RmqQueueAdapter";
+import { InMemoryOrderPlacedQueueAdapter } from "./adapter/InMemoryQueueAdapter";
+import { OrderPlacedRmqQueueAdapter } from "./adapter/OrderPlacedRmqQueueAdapter";
+import { PlaceOrderRmqQueueAdapter } from "./adapter/PlaceOrderRmqQueueAdapter";
 import { CheckoutQueueController } from "./controller/checkoutQueue.controller";
 
 @Module({
@@ -15,22 +17,38 @@ import { CheckoutQueueController } from "./controller/checkoutQueue.controller";
         ClientsModule.register([
             {
                 transport: Transport.RMQ,
-                name: QueueModule.queueClientProxy,
+                name: QueueModule.placeOrderQueueClientProxy,
                 options: {
                     urls: ["amqp://localhost"],
                     queue: "placeOrder",
                 },
             },
         ]),
+        ClientsModule.register([
+            {
+                transport: Transport.RMQ,
+                name: QueueModule.orderPlaceQueueClientProxy,
+                options: {
+                    urls: ["amqp://localhost"],
+                    queue: "orderPlaced",
+                },
+            },
+        ]),
     ],
     controllers: [CheckoutQueueController],
     providers: [
-        InMemoryQueueAdapter,
+        InMemoryOrderPlacedQueueAdapter,
         {
-            provide: QueueAdapter,
-            inject: [QueueModule.queueClientProxy],
+            provide: PlaceOrderQueue,
+            inject: [QueueModule.placeOrderQueueClientProxy],
             useFactory: (clientproxy: ClientProxy) =>
-                new RmqQueueAdapter(clientproxy),
+                new PlaceOrderRmqQueueAdapter(clientproxy),
+        },
+        {
+            provide: OrderPlacedQueue,
+            inject: [QueueModule.orderPlaceQueueClientProxy],
+            useFactory: (clientproxy: ClientProxy) =>
+                new OrderPlacedRmqQueueAdapter(clientproxy),
         },
         {
             provide: RepositoryFactory,
@@ -42,22 +60,23 @@ import { CheckoutQueueController } from "./controller/checkoutQueue.controller";
         },
         {
             provide: Checkout,
-            inject: [RepositoryFactory, GetItemGatway, QueueAdapter],
+            inject: [RepositoryFactory, GetItemGatway, OrderPlacedQueue],
             useFactory: (
                 repositoryFactory: RepositoryFactory,
                 getItemGatway: GetItemGatway,
-                queueAdapter: QueueAdapter,
+                orderPlacedQueue: OrderPlacedQueue,
             ) => {
                 return new Checkout(
                     repositoryFactory,
                     getItemGatway,
-                    queueAdapter,
+                    orderPlacedQueue,
                 );
             },
         },
     ],
-    exports: [QueueAdapter],
+    exports: [PlaceOrderQueue, OrderPlacedQueue],
 })
 export class QueueModule {
-    static queueClientProxy = Symbol("QueueClientProxy");
+    static orderPlaceQueueClientProxy = Symbol("OrderPlaceQueueClientProxy");
+    static placeOrderQueueClientProxy = Symbol("PlaceOrderQueueClientProxy");
 }

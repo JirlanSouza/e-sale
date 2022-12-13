@@ -1,4 +1,4 @@
-import { QueueAdapter } from "src/application/adapter/Queue";
+import { OrderPlacedQueue } from "src/application/adapter/OrderPlacedQueue";
 import { GetItemGatway } from "src/application/gatway/GetItemGatway";
 import { Checkout } from "src/application/usecases/Chekout";
 import { Coupon } from "src/domain/entity/Coupon";
@@ -7,7 +7,7 @@ import { RepositoryFactory } from "src/domain/factory/RepositoryFactory";
 import { CouponRepository } from "src/domain/repositoty/CouponRepository";
 import { OrderRepository } from "src/domain/repositoty/OrderRepository";
 import { InMemoryRepositoryFactory } from "src/infra/factory/InMemoryRepositoryFactory";
-import { InMemoryQueueAdapter } from "src/infra/queue/adapter/InMemoryQueueAdapter";
+import { InMemoryOrderPlacedQueueAdapter } from "src/infra/queue/adapter/InMemoryQueueAdapter";
 
 describe("Checkout", () => {
     let checkout: Checkout;
@@ -15,7 +15,7 @@ describe("Checkout", () => {
     let getItemGatway: GetItemGatway;
     let couponRepository: CouponRepository;
     let orderRepository: OrderRepository;
-    let queue: QueueAdapter;
+    let queue: OrderPlacedQueue;
     const items = [
         new Item("1", "Guitarra", 1000),
         new Item("2", "Amplificador", 5000),
@@ -32,7 +32,7 @@ describe("Checkout", () => {
         };
         couponRepository = repositoryFactory.createCouponRepository();
         orderRepository = repositoryFactory.createOrderRepository();
-        queue = new InMemoryQueueAdapter();
+        queue = new InMemoryOrderPlacedQueueAdapter();
         checkout = new Checkout(repositoryFactory, getItemGatway, queue);
     });
 

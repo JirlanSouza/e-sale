@@ -1,5 +1,5 @@
 import { Module } from "@nestjs/common";
-import { ClientProxy, ClientsModule, Transport } from "@nestjs/microservices";
+import { ClientProxy } from "@nestjs/microservices";
 import { OrderPlacedQueue } from "src/application/adapter/OrderPlacedQueue";
 import { PlaceOrderQueue } from "src/application/adapter/PlaceOrderQueue";
 import { GetItemGatway } from "src/application/gatway/GetItemGatway";
@@ -11,42 +11,22 @@ import { InMemoryOrderPlacedQueueAdapter } from "./adapter/InMemoryQueueAdapter"
 import { OrderPlacedRmqQueueAdapter } from "./adapter/OrderPlacedRmqQueueAdapter";
 import { PlaceOrderRmqQueueAdapter } from "./adapter/PlaceOrderRmqQueueAdapter";
 import { CheckoutQueueController } from "./controller/checkoutQueue.controller";
+import { QueueClientProxyFactory } from "./factory/QueueClientProxyFactory";
 
 @Module({
-    imports: [
-        ClientsModule.register([
-            {
-                transport: Transport.RMQ,
-                name: QueueModule.placeOrderQueueClientProxy,
-                options: {
-                    urls: ["amqp://localhost"],
-                    queue: "placeOrder",
-                },
-            },
-        ]),
-        ClientsModule.register([
-            {
-                transport: Transport.RMQ,
-                name: QueueModule.orderPlaceQueueClientProxy,
-                options: {
-                    urls: ["amqp://localhost"],
-                    queue: "orderPlaced",
-                },
-            },
-        ]),
-    ],
+    imports: [QueueClientProxyFactory.create()],
     controllers: [CheckoutQueueController],
     providers: [
         InMemoryOrderPlacedQueueAdapter,
         {
             provide: PlaceOrderQueue,
-            inject: [QueueModule.placeOrderQueueClientProxy],
+            inject: [QueueClientProxyFactory.placeOrderQueueClientProxy],
             useFactory: (clientproxy: ClientProxy) =>
                 new PlaceOrderRmqQueueAdapter(clientproxy),
         },
         {
             provide: OrderPlacedQueue,
-            inject: [QueueModule.orderPlaceQueueClientProxy],
+            inject: [QueueClientProxyFactory.orderPlaceQueueClientProxy],
             useFactory: (clientproxy: ClientProxy) =>
                 new OrderPlacedRmqQueueAdapter(clientproxy),
         },
@@ -76,7 +56,4 @@ import { CheckoutQueueController } from "./controller/checkoutQueue.controller";
     ],
     exports: [PlaceOrderQueue, OrderPlacedQueue],
 })
-export class QueueModule {
-    static orderPlaceQueueClientProxy = Symbol("OrderPlaceQueueClientProxy");
-    static placeOrderQueueClientProxy = Symbol("PlaceOrderQueueClientProxy");
-}
+export class QueueModule {}
